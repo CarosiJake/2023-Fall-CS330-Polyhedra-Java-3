@@ -31,15 +31,31 @@ public class Composite
      */
     public Composite()
     {
-        this.allPolyhedra = new Vector<Polyhedron>();
+	this.allPolyhedra = new Vector<Polyhedron>();
         this.theBox = new BoundingBox();
+    }
+
+    /**
+     * Composite Copy Constructor.
+     *
+     * @param src source Composite object to copy
+     */
+    public Composite(Composite src)
+    {
+        allPolyhedra = new Vector<Polyhedron>();
+
+        for (Polyhedron srcPoly : src.allPolyhedra) {
+            this.allPolyhedra.add(srcPoly.clone());
+        }
+
+        this.theBox = src.theBox.clone();
     }
 
     @Override
     public String getType()
     {
         // Replace the return line
-        return null;
+        return "Composite";
     }
 
     @Override
@@ -56,6 +72,10 @@ public class Composite
     public void add(Polyhedron toAdd)
     {
         // Write this function.
+   
+	allPolyhedra.add(toAdd.clone());   
+	this.theBox.merge(toAdd.getBoundingBox());   
+
     }
 
     /**
@@ -67,6 +87,12 @@ public class Composite
     public void scale(double scalingFactor)
     {
         // Write this function.
+
+	for (Polyhedron poly : this.allPolyhedra) {
+		poly.scale(scalingFactor);
+	}
+
+	theBox.scale(scalingFactor);
     }
 
     /**
@@ -88,11 +114,13 @@ public class Composite
     @Override
     public Polyhedron clone()
     {
-        Composite aCopy = new Composite();
+   //     Composite aCopy = new Composite();
 
         // A loop might be helpful to 'add' each entry from this.allPolyhedra
 
-        return aCopy;
+   //     return aCopy;
+   
+   	return new Composite(this); 
     }
 
     @Override
@@ -130,6 +158,10 @@ public class Composite
 
         // Maybe a loop can help...
 
+	for (Polyhedron poly : this.allPolyhedra) {
+		bld.append("  " + poly + "\n");
+	}
+
         return bld.toString();
     }
 
@@ -138,7 +170,7 @@ public class Composite
     public boolean isComplex()
     {
         // Is the return corrrect?
-        return false;
+        return true;
     }
 
     @Override
